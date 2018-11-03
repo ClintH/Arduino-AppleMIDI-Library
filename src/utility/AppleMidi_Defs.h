@@ -7,8 +7,6 @@
 
 #include "AppleMidi_Namespace.h"
 
-#include "Midi_Defs.h"
-
 #if ARDUINO
 	#include <Arduino.h>
 #else

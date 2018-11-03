@@ -5,12 +5,11 @@
 
 #pragma once
 
-#include "IMidiCallbacks.h"
 #include "utility/AppleMidi_Defs.h"
 
 BEGIN_APPLEMIDI_NAMESPACE
 
-class IAppleMidiCallbacks : public IMidiCallbacks
+class IAppleMidiCallbacks
 {
 public:
 	virtual void OnInvitation(void* sender, AppleMIDI_Invitation&) = 0;

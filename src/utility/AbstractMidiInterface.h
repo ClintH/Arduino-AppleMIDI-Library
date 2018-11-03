@@ -68,7 +68,7 @@ typedef byte MIDI_VELOCITY;
 typedef byte MIDI_PRESSURE;
 
 /*! Enumeration of MIDI types */
-enum MidiType
+enum class MidiType
 {
     InvalidType           = 0x00,    ///< For notifying errors
     NoteOff               = 0x80,    ///< Note Off
@@ -110,7 +110,7 @@ struct Thru
  See the detailed controllers numbers & description here:
  http://www.somascape.org/midi/tech/spec.html#ctrlnums
  */
-enum MidiControlChangeNumber
+enum class MidiControlChangeNumber
 {
     // High resolution Continuous Controllers MSB (+32 for LSB) ----------------
     BankSelect                  = 0,
@@ -192,7 +192,7 @@ struct RPN
 
 /*! \brief Extract an enumerated MIDI type from a status byte
  */
-static Type getTypeFromStatusByte(byte status)
+static MidiType getTypeFromStatusByte(byte status)
 {
     if ((status  < 0x80) ||
         (status == 0xf4) ||
@@ -201,15 +201,15 @@ static Type getTypeFromStatusByte(byte status)
         (status == 0xfD))
     {
         // Data bytes and undefined.
-        return InvalidType;
+        return MidiType::InvalidType;
     }
     if (status < 0xf0)
     {
         // Channel message, remove channel nibble.
-        return Type(status & 0xf0);
+        return MidiType(status & 0xf0);
     }
     
-    return Type(status);
+    return MidiType(status);
 }
 
 /*! \brief Returns channel in the range 1-16
@@ -221,15 +221,15 @@ static Channel getChannelFromStatusByte(byte status)
 
 /*! \brief check if channel is in the range 1-16
  */
-static bool isChannelMessage(Type type)
+static bool isChannelMessage(MidiType type)
 {
-    return (type == NoteOff           ||
-            type == NoteOn            ||
-            type == ControlChange     ||
-            type == AfterTouchPoly    ||
-            type == AfterTouchChannel ||
-            type == PitchBend         ||
-            type == ProgramChange);
+    return (type == MidiType::NoteOff           ||
+            type == MidiType::NoteOn            ||
+            type == MidiType::ControlChange     ||
+            type == MidiType::AfterTouchPoly    ||
+            type == MidiType::AfterTouchChannel ||
+            type == MidiType::PitchBend         ||
+            type == MidiType::ProgramChange);
 }
 
 class AbstractMidiInterface
@@ -266,24 +266,24 @@ protected:
 public:
     // sending
     void sendNoteOn(DataByte note, DataByte velocity, Channel channel) {
-        send(Type::NoteOn, channel, note, velocity);
+        send(MidiType::NoteOn, channel, note, velocity);
     }
     
     void sendNoteOff(DataByte note, DataByte velocity, Channel channel) {
-        send(Type::NoteOff, channel, note, velocity);
+        send(MidiType::NoteOff, channel, note, velocity);
     }
     
     void sendProgramChange(DataByte number, Channel channel) {
-        send(Type::ProgramChange, number, 0, channel);
+        send(MidiType::ProgramChange, number, 0, channel);
    }
     
     void sendControlChange(DataByte number, DataByte value, Channel channel) {
-        send(Type::ControlChange, number, value, channel);
+        send(MidiType::ControlChange, number, value, channel);
    }
     
     void sendPitchBend(int value, Channel channel) {
         const unsigned bend = unsigned(value - int(MIDI_PITCHBEND_MIN));
-        send(Type::PitchBend, (bend & 0x7f), (bend >> 7) & 0x7f, channel);
+        send(MidiType::PitchBend, (bend & 0x7f), (bend >> 7) & 0x7f, channel);
     }
     
     void sendPitchBend(double pitchValue, Channel channel) {
@@ -293,15 +293,15 @@ public:
     }
     
     void sendPolyPressure(DataByte note, DataByte pressure, Channel channel) {
-        send(Type::AfterTouchPoly, note, pressure, channel);
+        send(MidiType::AfterTouchPoly, note, pressure, channel);
     }
     
     void sendAfterTouch(DataByte pressure, Channel channel) {
-        send(Type::AfterTouchChannel, pressure, 0, channel);
+        send(MidiType::AfterTouchChannel, pressure, 0, channel);
     }
     
     void sendAfterTouch(DataByte note, DataByte pressure, Channel channel) {
-        send(Type::AfterTouchChannel, note, pressure, channel);
+        send(MidiType::AfterTouchChannel, note, pressure, channel);
     }
     
     void sendSysEx(const byte*, uint16_t inLength) {
@@ -401,7 +401,7 @@ public:
     
 protected:
     // this method needs to be overwritten to add the specific Serial, BLE or AppleMIDI serializers
-    virtual void send(Type type, DataByte data1, DataByte data2, Channel channel) = 0;
+    virtual void send(MidiType type, DataByte data1, DataByte data2, Channel channel) = 0;
 };
 
 }

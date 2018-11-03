@@ -58,8 +58,8 @@ void setup()
   AppleMIDI.OnConnected(OnAppleMidiConnected);
   AppleMIDI.OnDisconnected(OnAppleMidiDisconnected);
 
-  AppleMIDI.OnReceiveNoteOn(OnAppleMidiNoteOn);
-  AppleMIDI.OnReceiveNoteOff(OnAppleMidiNoteOff);
+  AppleMIDI.setHandleNoteOn(OnAppleMidiNoteOn);
+  AppleMIDI.setHandleNoteOff(OnAppleMidiNoteOff);
 
   Serial.println(F("Sending NoteOn/Off of note 45, every second"));
 }

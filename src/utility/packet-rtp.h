@@ -8,6 +8,9 @@
 #include "AppleMidi_Settings.h"
 #include "dissector.h"
 
+#include "AbstractMidiInterface.h"
+using namespace Midi;
+
 BEGIN_APPLEMIDI_NAMESPACE
 
 /*
@@ -71,7 +74,7 @@ struct _rtp_info {
 class PacketRtp {
 public:
 
-	static int dissect_rtp(Dissector* dissector, IMidiCallbacks*, unsigned char* packetBuffer, size_t packetSize) {
+	static int dissect_rtp(Dissector* dissector, AbstractMidiInterface*, unsigned char* packetBuffer, size_t packetSize) {
 		#ifdef APPLEMIDI_DEBUG_VERBOSE
 		DEBUGSTREAM.println("start: dissect_rtp");
 		#endif

@@ -7,6 +7,9 @@
 
 #include <stdint.h>
 
+#include "AbstractMidiInterface.h"
+using namespace Midi;
+
 BEGIN_APPLEMIDI_NAMESPACE
 
 #define MSEC_PER_SEC 1000
